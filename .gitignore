@@ -1,0 +1,9 @@
+.DS_Store
+._*
+CmdSplit.app/
+CmdSplit.app.zip
+*.dSYM/
+verification.json
+work/
+build/
+*.log

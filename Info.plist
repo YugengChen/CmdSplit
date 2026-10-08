@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+    <key>CFBundleExecutable</key><string>CmdSplit</string>
+    <key>CFBundleIdentifier</key><string>local.ychen.CmdSplit</string>
+    <key>CFBundleName</key><string>CmdSplit</string>
+    <key>CFBundleDisplayName</key><string>左右分屏</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>1.1.0</string>
+    <key>CFBundleVersion</key><string>2</string>
+    <key>LSMinimumSystemVersion</key><string>13.0</string>
+    <key>LSUIElement</key><true/>
+    <key>NSHighResolutionCapable</key><true/>
+    <key>NSAccessibilityUsageDescription</key><string>左右分屏需要调整当前窗口的位置和大小，以响应 ⌘←、⌘→ 和 ⌘↑。</string>
+</dict></plist>
