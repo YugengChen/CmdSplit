@@ -29,6 +29,23 @@ func attribute(_ element: AXUIElement, _ name: String) -> CFTypeRef? {
     return value
 }
 
+func focusedApplicationElement(workspacePID: pid_t) -> AXUIElement? {
+    // NSRunningApplication may report -1 for a foreground app such as Preview.
+    // Ask AX for the focused application before falling back to a valid workspace PID.
+    let system = AXUIElementCreateSystemWide()
+    AXUIElementSetMessagingTimeout(system, 1)
+    if let value = attribute(system, kAXFocusedApplicationAttribute),
+       CFGetTypeID(value) == AXUIElementGetTypeID() {
+        let application = value as! AXUIElement
+        var pid: pid_t = 0
+        if AXUIElementGetPid(application, &pid) == .success, pid > 0 {
+            return application
+        }
+    }
+    guard workspacePID > 0 else { return nil }
+    return AXUIElementCreateApplication(workspacePID)
+}
+
 func windowRect(_ window: AXUIElement) -> CGRect? {
     guard let position = attribute(window, kAXPositionAttribute),
           let size = attribute(window, kAXSizeAttribute),
@@ -235,7 +252,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let generation = actionGeneration
         guard AXIsProcessTrusted() else { refreshPermission(force: true); return }
         guard let app = NSWorkspace.shared.frontmostApplication else { fail("没有前台应用"); return }
-        let element = AXUIElementCreateApplication(app.processIdentifier)
+        guard let element = focusedApplicationElement(workspacePID: app.processIdentifier) else {
+            fail("无法识别前台应用的窗口"); return
+        }
         AXUIElementSetMessagingTimeout(element, 1)
         guard let value = attribute(element, kAXFocusedWindowAttribute) ?? attribute(element, kAXMainWindowAttribute),
               CFGetTypeID(value) == AXUIElementGetTypeID() else { fail("前台应用没有可调整的窗口"); return }
@@ -329,7 +348,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func writeStatus() {
-        var value: [String: Any] = ["pid": getpid(), "version": "1.1.0", "axTrusted": trusted,
+        var value: [String: Any] = ["pid": getpid(), "version": "1.1.1", "axTrusted": trusted,
             "hotkeysRegistered": hotkeys.count == WindowAction.allCases.count,
             "hotkeyCount": hotkeys.count, "paused": paused,
             "autoStartInstalled": FileManager.default.fileExists(atPath: agentURL.path),

@@ -16,7 +16,7 @@
 
 ### 使用安装包
 
-从 [v1.1.0 发布页](https://github.com/YugengChen/CmdSplit/releases/tag/v1.1.0) 下载 `CmdSplit-v1.1.0-macos-arm64.zip`，解压后在该文件夹的终端运行：
+从 [v1.1.1 发布页](https://github.com/YugengChen/CmdSplit/releases/tag/v1.1.1) 下载 `CmdSplit-v1.1.1-macos-arm64.zip`，解压后在该文件夹的终端运行：
 
 ```bash
 bash install.sh
@@ -77,4 +77,6 @@ bash uninstall.sh
 
 ## 验证
 
-v1.1.0 在 Apple Silicon、macOS 27.0.1 上验证了左右分屏、普通窗口最大化，以及后台进程退出后自动恢复三组快捷键。最大化测试确认窗口的 `AXFullScreen` 状态为 `false`。登录自动启动配置已检查，未通过实际重启整台 Mac 进行验证。
+v1.1.1 修复了“预览”打开 PDF 时快捷键无效的问题：部分应用的 `NSRunningApplication.processIdentifier` 可能为 `-1`，现在优先从系统辅助功能取得前台应用，只在进程号有效时使用原来的查询方式。
+
+在 Apple Silicon、macOS 27.0.1 上，使用独立测试 PDF 在“预览”中验证了左右分屏和普通窗口最大化，“文本编辑”的三组快捷键也通过验证。测试直接发送快捷键并读取实际窗口尺寸，确认最大化后的 `AXFullScreen` 为 `false`。后台进程退出后，系统自动恢复应用，“预览”的三组快捷键仍正常。登录自动启动配置已检查，未通过实际重启整台 Mac 进行验证。
